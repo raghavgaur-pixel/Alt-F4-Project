@@ -91,25 +91,33 @@ function CategoryBreakdown({ data }: { data: CommunityReportResponse }) {
 
 function CommonScamsSection() {
   const scams = [
-    { title: "Refund QR Fraud", icon: CreditCard, tip: "Never scan a QR code to receive money; QR payments usually authorize sending funds." },
-    { title: "Fake KYC Updates", icon: BadgeCheck, tip: "Open bank and wallet apps directly instead of following QR-linked KYC pages." },
-    { title: "Phishing Redirects", icon: Link2Off, tip: "Check the final domain before entering passwords, OTPs, or card details." },
-    { title: "Urgency Campaigns", icon: AlertTriangle, tip: "Treat limited-time rewards, penalties, and account-lock warnings as suspicious." }
+    { title: "Refund QR Fraud", icon: CreditCard, tip: "Never scan a QR code to receive money; QR payments usually authorize sending funds.", prevention: "Real refunds don't require scanning a QR code." },
+    { title: "Fake KYC Updates", icon: BadgeCheck, tip: "Open bank and wallet apps directly instead of following QR-linked KYC pages.", prevention: "Verify KYC requests through official bank support channels." },
+    { title: "Phishing Redirects", icon: Link2Off, tip: "Check the final domain before entering passwords, OTPs, or card details.", prevention: "Look for subtle misspellings in the URL (e.g., g00gle.com)." },
+    { title: "Urgency Campaigns", icon: AlertTriangle, tip: "Treat limited-time rewards, penalties, and account-lock warnings as suspicious.", prevention: "Pause and verify before acting on high-pressure threats." }
   ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Common QR Scams</CardTitle>
+        <CardTitle>Common QR Scams & Prevention</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {scams.map((scam) => {
           const Icon = scam.icon;
           return (
-            <div key={scam.title} className="rounded-xl border border-border bg-slate-950/40 p-4">
-              <Icon className="h-5 w-5 text-amber-300" />
-              <h3 className="mt-3 text-sm font-semibold text-white">{scam.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-400">{scam.tip}</p>
+            <div key={scam.title} className="group rounded-xl border border-border bg-slate-950/40 p-4 transition-all hover:bg-slate-950/60 hover:border-amber-400/20">
+              <div className="flex items-center gap-2">
+                <div className="rounded-lg bg-amber-400/10 p-2 transition-transform group-hover:scale-110">
+                  <Icon className="h-5 w-5 text-amber-300" />
+                </div>
+                <h3 className="text-sm font-bold text-white tracking-tight">{scam.title}</h3>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-slate-400">{scam.tip}</p>
+              <div className="mt-4 rounded-lg border border-emerald-400/10 bg-emerald-400/5 p-3">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 mb-1">Prevention Tip</p>
+                <p className="text-xs leading-relaxed text-emerald-300/80">{scam.prevention}</p>
+              </div>
             </div>
           );
         })}
@@ -126,7 +134,7 @@ export function CommunityReportsPage() {
 
   return (
     <MarketingShell>
-      <div className="space-y-6">
+      <div className="space-y-6 px-1">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm uppercase text-slate-500">Threat intelligence exchange</p>

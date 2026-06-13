@@ -27,7 +27,7 @@ export function RecentReportsList({ reports }: { reports: CommunityReport[] }) {
           </div>
         ) : (
           reports.map((report) => (
-          <div key={report.id} className="rounded-2xl border border-border bg-slate-950/40 p-5 transition duration-200 hover:-translate-y-0.5 hover:border-cyan-400/25 hover:bg-slate-950/60">
+          <div key={report.id} className="rounded-2xl border border-border bg-slate-950/40 p-5 transition-all duration-200 hover:scale-[1.01] hover:border-cyan-400/25 hover:bg-slate-950/60 hover:shadow-lg hover:shadow-cyan-500/10">
             <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
               <div className="space-y-2">
                 <Badge variant="danger">{report.category.replace(/_/g, " ")}</Badge>
@@ -38,27 +38,34 @@ export function RecentReportsList({ reports }: { reports: CommunityReport[] }) {
               </div>
               <SeverityBadge severity={report.scan.severity} />
             </div>
-            <h3 className="text-base font-semibold text-white">{report.scan.qrType} threat report</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-300">{report.description}</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-border bg-slate-950/50 p-3">
-                <div className="flex items-center gap-2 text-xs uppercase text-slate-500">
-                  <Gauge className="h-4 w-4 text-cyan-300" />
-                  Risk score
+            <div className="flex items-center gap-2 mb-2">
+              <ShieldAlert className="h-4 w-4 text-rose-400" />
+              <h3 className="text-base font-bold text-white tracking-tight">{report.scan.qrType} Threat Intelligence</h3>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-slate-300 line-clamp-2">{report.description}</p>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl border border-border/50 bg-slate-950/50 p-4 transition-colors hover:border-cyan-400/20">
+                <div className="flex items-center justify-between gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  <span>Risk Assessment</span>
+                  <Gauge className="h-3.5 w-3.5 text-cyan-300" />
                 </div>
-                <div className="mt-2 flex items-center gap-3">
-                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-800">
-                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500" style={{ width: `${report.scan.riskScore}%` }} />
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-800 shadow-inner">
+                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.4)] transition-all duration-1000" style={{ width: `${report.scan.riskScore}%` }} />
                   </div>
-                  <span className="text-sm font-semibold text-white">{report.scan.riskScore}</span>
+                  <span className="text-xs font-bold text-white">{report.scan.riskScore}%</span>
                 </div>
               </div>
-              <div className="rounded-xl border border-border bg-slate-950/50 p-3">
-                <div className="flex items-center gap-2 text-xs uppercase text-slate-500">
-                  <ShieldAlert className="h-4 w-4 text-amber-300" />
-                  Summary
+
+              <div className="rounded-xl border border-border/50 bg-slate-950/50 p-4 transition-colors hover:border-amber-400/20">
+                <div className="flex items-center justify-between gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  <span>Intelligence Summary</span>
+                  <FileSearch className="h-3.5 w-3.5 text-amber-300" />
                 </div>
-                <p className="mt-2 text-sm text-slate-300">{report.category.replace(/_/g, " ")} signal on {report.scan.qrType}</p>
+                <p className="mt-2.5 text-xs font-medium text-slate-300 truncate">
+                  {report.category.replace(/_/g, " ")} detected in {report.scan.qrType} payload
+                </p>
               </div>
             </div>
           </div>

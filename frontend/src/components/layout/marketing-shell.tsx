@@ -29,7 +29,7 @@ export function MarketingShell({ children }: PropsWithChildren) {
           )}
         </div>
       </header>
-      <main>{children}</main>
+      <main className="mx-auto max-w-7xl px-6 py-6">{children}</main>
     </div>
   );
 }
