@@ -134,7 +134,14 @@ function analyzeSignals(params: {
     /eval\s*\(|document\.write\s*\(|settimeout\s*\(\s*['"`]/i.test(scriptText) ||
     /window\.location|location\.href|atob\s*\(/i.test(scriptText);
   const hasDownloadPrompt = /download|install|apk|update now/i.test(`${params.title}\n${params.bodyText}`);
-  const brandImpersonation = TRUST_BRAND_TERMS.some((term) => finalHost.includes(term) || params.bodyText.toLowerCase().includes(term));
+  const pageText = params.bodyText.toLowerCase();
+
+const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
+  const mentionsBrand = pageText.includes(term);
+  const hostMatchesBrand = finalHost.includes(term);
+
+  return mentionsBrand && !hostMatchesBrand;
+});
   const socialEngineering = /urgent|limited time|verify|suspended|blocked|claim now|reward|gift/i.test(
     `${params.title}\n${params.bodyText}`
   );
@@ -219,13 +226,22 @@ function analyzeSignals(params: {
   }
 
   if (brandImpersonation) {
-    score += 10;
-    findings.push({
-      category: ThreatCategory.PHISHING,
-      description: "The page contains brand language that may be used for impersonation."
-    });
-    screenshotFindings.add("Possible brand impersonation cues detected.");
-  }
+  score += 15;
+
+  findings.push({
+    category: ThreatCategory.PHISHING,
+    description:
+      "The page references a well-known brand while being hosted on a different domain, which may indicate impersonation."
+  });
+
+  screenshotFindings.add(
+    "Potential brand impersonation indicators detected."
+  );
+
+  recommendations.add(
+    "Verify the domain belongs to the organization being referenced."
+  );
+}
 
   if (socialEngineering) {
     score += 8;
@@ -423,20 +439,31 @@ export const browserInspectionService = {
       });
 
       if (response) {
-        let request = response.request();
-        const hops: BrowserRedirect[] = [];
+  let request = response.request();
+  const hops: BrowserRedirect[] = [];
 
-        while (request.redirectedFrom()) {
-          const previous = request.redirectedFrom();
-          hops.unshift({
-            url: previous.url(),
-            status: request.response()?.status() ?? null
-          });
-          request = previous;
-        }
+  while (request.redirectedFrom()) {
+    const previous = request.redirectedFrom();
 
-        redirects.push(...hops);
-      }
+    let status: number | null = null;
+
+    try {
+      const previousResponse = await previous.response();
+      status = previousResponse?.status() ?? null;
+    } catch {
+      status = null;
+    }
+
+    hops.unshift({
+      url: previous.url(),
+      status
+    });
+
+    request = previous;
+  }
+
+  redirects.push(...hops);
+}
 
       await page.waitForLoadState("networkidle", { timeout: navigationTimeoutMs }).catch(() => undefined);
       await page.waitForTimeout(500);
@@ -445,6 +472,8 @@ export const browserInspectionService = {
 
       screenshotData.fullPage = await page.screenshot({ fullPage: true });
       screenshotData.viewport = await page.screenshot({ fullPage: false });
+      analysisNotes.push("Full-page screenshot captured successfully.");
+analysisNotes.push("Viewport screenshot captured successfully.");
       await page.waitForTimeout(400);
       screenshotData.finalRedirected = await page.screenshot({ fullPage: false });
 
@@ -562,7 +591,7 @@ export const browserInspectionService = {
         scoreDelta: analysis.scoreDelta,
         browserErrors: browserErrorMessages
       };
-
+      analysisNotes.push("Browser inspection completed successfully.");
       return browserResult;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
