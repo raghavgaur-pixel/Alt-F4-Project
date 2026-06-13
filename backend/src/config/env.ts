@@ -29,7 +29,13 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   JWT_SECRET: z.string().min(16),
   CLIENT_URL: z.string().url(),
-  GEMINI_API_KEY: z.string().min(1)
+  GEMINI_API_KEY: z.string().min(1),
+  FRONTEND_DIST_DIR: z.string().optional(),
+  ANALYSIS_ARTIFACT_DIR: z.string().optional(),
+  URL_INSPECTION_TIMEOUT_MS: z.coerce.number().int().positive().default(25000),
+  URL_INSPECTION_NAVIGATION_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
+  URL_INSPECTION_VIEWPORT_WIDTH: z.coerce.number().int().positive().default(1280),
+  URL_INSPECTION_VIEWPORT_HEIGHT: z.coerce.number().int().positive().default(800)
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

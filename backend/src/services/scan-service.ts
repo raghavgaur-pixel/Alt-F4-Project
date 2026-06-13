@@ -1,12 +1,15 @@
 import { ThreatCategory } from "@prisma/client";
+import { randomUUID } from "node:crypto";
 import { scanRepository } from "../repositories/scan-repository.js";
 import type { ScanAnalysisResult } from "../types/scan.js";
 import { AppError } from "../utils/app-error.js";
 import { aiService } from "./ai-service.js";
+import { browserInspectionService } from "./browser-inspection-service.js";
 import { qrDecoderService } from "./qr-decoder-service.js";
 import { threatScoringService } from "./threat-scoring-service.js";
 import { upiAnalyzerService } from "./upi-analyzer-service.js";
 import { urlAnalyzerService } from "./url-analyzer-service.js";
+import { extractInspectableUrl } from "../utils/url.js";
 
 export const scanService = {
   async analyzeUpload(userId: string, file?: Express.Multer.File) {
@@ -15,6 +18,9 @@ export const scanService = {
     }
 
     const decoded = await qrDecoderService.decode(file.buffer);
+    const inspectableUrl = extractInspectableUrl(decoded.content);
+    const qrType = inspectableUrl ? "URL" : decoded.qrType;
+    const scanId = randomUUID();
 
     let baseScore = 5;
     const findings: ScanAnalysisResult["findings"] = [];
@@ -23,14 +29,23 @@ export const scanService = {
     ]);
     let urlAnalysis: ScanAnalysisResult["urlAnalysis"];
     let upiAnalysis: ScanAnalysisResult["upiAnalysis"];
+    let browserInspection: ScanAnalysisResult["browserInspection"];
 
-    switch (decoded.qrType) {
+    switch (qrType) {
       case "URL": {
-        const result = urlAnalyzerService.analyze(decoded.content);
+        const analyzedUrl = inspectableUrl ?? decoded.content;
+        const result = urlAnalyzerService.analyze(analyzedUrl);
         baseScore += result.scoreDelta;
         findings.push(...result.findings);
         result.recommendations.forEach((value) => recommendations.add(value));
         urlAnalysis = result.analysis;
+        browserInspection = await browserInspectionService.inspect(analyzedUrl, scanId);
+        baseScore += Math.min(35, browserInspection.scoreDelta);
+        findings.push(...browserInspection.findings);
+        browserInspection.recommendations.forEach((value) => recommendations.add(value));
+        if (browserInspection.finalUrl && browserInspection.finalUrl !== analyzedUrl) {
+          baseScore += browserInspection.redirects.length > 0 ? 6 : 0;
+        }
         break;
       }
       case "UPI": {
@@ -85,13 +100,14 @@ export const scanService = {
 
     const partialResult = {
       originalContent: decoded.content,
-      qrType: decoded.qrType,
+      qrType,
       riskScore: assessment.riskScore,
       severity: assessment.severity,
       findings: assessment.findings,
       recommendations: assessment.recommendations,
       urlAnalysis,
-      upiAnalysis
+      upiAnalysis,
+      browserInspection
     };
 
     const aiExplanation = await aiService.explainScan(partialResult);
@@ -100,7 +116,7 @@ export const scanService = {
       aiExplanation
     };
 
-    return scanRepository.create(userId, fullResult);
+    return scanRepository.create(userId, fullResult, scanId);
   },
 
   async getScanById(scanId: string, userId: string) {

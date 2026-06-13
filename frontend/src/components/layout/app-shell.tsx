@@ -15,8 +15,8 @@ export function AppShell({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen">
       <header className="border-b border-border bg-slate-950/50 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="text-lg font-semibold text-cyan-300">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+          <Link to="/" className="text-lg font-semibold tracking-wide text-cyan-300 transition hover:text-cyan-200">
             AEGIS QR
           </Link>
           <nav className="hidden items-center gap-2 md:flex">
@@ -46,7 +46,7 @@ export function AppShell({ children }: PropsWithChildren) {
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-7xl px-6 py-8 md:py-10">{children}</main>
     </div>
   );
 }

@@ -27,6 +27,42 @@ export interface ThreatReport {
   createdAt: string;
 }
 
+export interface ThreatFinding {
+  category: ThreatCategory;
+  description: string;
+}
+
+export type BrowserScreenshotType = "FULL_PAGE" | "VIEWPORT" | "FINAL_REDIRECTED";
+
+export interface BrowserScreenshot {
+  type: BrowserScreenshotType;
+  fileName: string;
+  storagePath: string;
+  publicUrl: string;
+  mimeType: string;
+  width: number;
+  height: number;
+}
+
+export interface BrowserRedirect {
+  url: string;
+  status: number | null;
+}
+
+export interface BrowserInspectionResult {
+  riskLevel: Severity;
+  confidence: number;
+  finalUrl: string;
+  redirects: BrowserRedirect[];
+  findings: ThreatFinding[];
+  screenshotFindings: string[];
+  recommendations: string[];
+  screenshots: BrowserScreenshot[];
+  analysisNotes: string[];
+  scoreDelta: number;
+  browserErrors: string[];
+}
+
 export interface Scan {
   id: string;
   userId: string;
@@ -35,8 +71,11 @@ export interface Scan {
   riskScore: number;
   aiExplanation: string;
   severity: Severity;
+  finalUrl: string | null;
+  browserInspection: BrowserInspectionResult | null;
   createdAt: string;
   threatReports: ThreatReport[];
+  screenshots: BrowserScreenshot[];
 }
 
 export interface CommunityReport {
