@@ -12,11 +12,8 @@ function confidenceFor(result: Omit<ScanAnalysisResult, "aiExplanation">): numbe
   const findingWeight = Math.min(result.findings.length * 4, 12);
   const typeWeight = result.qrType === "UNKNOWN" ? -6 : 4;
   const severityWeight = result.severity === "SAFE" || result.severity === "LOW_RISK" ? 2 : 6;
-  const browserWeight = result.browserInspection
-    ? Math.min(8, Math.max(0, Math.round((result.browserInspection.confidence - 70) / 5)))
-    : 0;
 
-  return Math.max(74, Math.min(97, 82 + findingWeight + typeWeight + severityWeight + browserWeight));
+  return Math.max(74, Math.min(97, 82 + findingWeight + typeWeight + severityWeight));
 }
 
 function threatAssessment(result: Omit<ScanAnalysisResult, "aiExplanation">): string {
@@ -56,17 +53,6 @@ function detectedIndicators(result: Omit<ScanAnalysisResult, "aiExplanation">): 
     if (/login|signin|verify|account/i.test(result.originalContent)) {
       indicators.push("Login or account verification language detected");
     }
-  }
-
-  if (result.qrType === "URL" && result.browserInspection) {
-    indicators.push(`Final destination inspected: ${result.browserInspection.finalUrl}`);
-
-    if (result.browserInspection.redirects.length > 0) {
-      indicators.push(`Redirect chain observed: ${result.browserInspection.redirects.length} hop(s)`);
-    }
-
-    result.browserInspection.findings.forEach((finding) => indicators.push(finding.description));
-    result.browserInspection.screenshotFindings.forEach((finding) => indicators.push(`Screenshot signal: ${finding}`));
   }
 
   if (result.qrType === "UPI" && result.upiAnalysis) {
@@ -149,9 +135,7 @@ function potentialRisks(result: Omit<ScanAnalysisResult, "aiExplanation">): stri
 function executiveSummary(result: Omit<ScanAnalysisResult, "aiExplanation">): string {
   const payloadContext =
     result.qrType === "URL"
-      ? `The QR resolves to a web destination and was reviewed for transport security, redirect behavior, and browser-rendered phishing indicators.${
-          result.browserInspection ? ` Final destination: ${result.browserInspection.finalUrl}.` : ""
-        }`
+      ? "The QR resolves to a web destination and was reviewed for transport security, redirect behavior, and phishing-oriented URL patterns."
       : result.qrType === "UPI"
         ? "The QR encodes a UPI payment request and was reviewed for recipient clarity, payment prefill behavior, and fraud pressure signals."
         : result.qrType === "WIFI"
@@ -174,12 +158,6 @@ function recommendations(result: Omit<ScanAnalysisResult, "aiExplanation">): str
     actions.add("Open the domain only after confirming it matches the expected organization and does not rely on redirect parameters.");
     if (!result.urlAnalysis?.https) actions.add("Do not enter credentials or payment details because the destination lacks HTTPS.");
     if (result.urlAnalysis?.containsApkDownload) actions.add("Block the download path and validate the publisher before allowing installation.");
-    if (result.browserInspection?.screenshots.length) {
-      actions.add("Review the captured screenshots and final destination before allowing the QR code to be reused.");
-    }
-    if (result.browserInspection?.redirects.length) {
-      actions.add("Confirm the redirect chain does not hide a mismatched or shortened destination.");
-    }
   } else if (result.qrType === "UPI") {
     actions.add("Compare the payee name and UPI handle with an independently verified source before approving payment.");
     if (result.upiAnalysis?.amount) actions.add("Confirm the requested amount outside the QR flow before authorizing the transaction.");

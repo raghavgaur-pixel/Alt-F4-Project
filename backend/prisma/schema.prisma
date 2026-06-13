@@ -41,12 +41,9 @@ model Scan {
   riskScore       Int
   aiExplanation   String
   severity        Severity
-  finalUrl        String?
-  browserInspection Json?
   createdAt       DateTime       @default(now())
   user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   threatReports   ThreatReport[]
-  screenshots     ScanScreenshot[]
 }
 
 model ThreatReport {
@@ -56,19 +53,5 @@ model ThreatReport {
   description String
   createdAt   DateTime       @default(now())
   scan        Scan           @relation(fields: [scanId], references: [id], onDelete: Cascade)
-}
-
-model ScanScreenshot {
-  id          String   @id @default(cuid())
-  scanId      String
-  type        String
-  fileName    String
-  storagePath String
-  publicUrl   String
-  mimeType    String
-  width       Int
-  height      Int
-  createdAt   DateTime @default(now())
-  scan        Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
 }
 

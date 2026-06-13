@@ -46,37 +46,6 @@ export interface UrlAnalysis {
   loginFormNote: string;
 }
 
-export type BrowserScreenshotType = "FULL_PAGE" | "VIEWPORT" | "FINAL_REDIRECTED";
-
-export interface BrowserScreenshot {
-  type: BrowserScreenshotType;
-  fileName: string;
-  storagePath: string;
-  publicUrl: string;
-  mimeType: string;
-  width: number;
-  height: number;
-}
-
-export interface BrowserRedirect {
-  url: string;
-  status: number | null;
-}
-
-export interface BrowserInspectionResult {
-  riskLevel: Severity;
-  confidence: number;
-  finalUrl: string;
-  redirects: BrowserRedirect[];
-  findings: DetectedThreat[];
-  screenshotFindings: string[];
-  recommendations: string[];
-  screenshots: BrowserScreenshot[];
-  analysisNotes: string[];
-  scoreDelta: number;
-  browserErrors: string[];
-}
-
 export interface ScanAnalysisResult {
   originalContent: string;
   qrType: QrType;
@@ -87,6 +56,5 @@ export interface ScanAnalysisResult {
   aiExplanation: string;
   urlAnalysis?: UrlAnalysis;
   upiAnalysis?: UpiAnalysis;
-  browserInspection?: BrowserInspectionResult;
 }
 

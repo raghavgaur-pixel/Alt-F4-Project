@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const faqs = [
   {
-    question: "Is QRGuard AI free?",
+    question: "Is AEGIS QR free?",
     answer: "Yes, our core scanning and threat detection services are free for individual users. We also offer enterprise-grade solutions for fintech and security teams."
   },
   {
@@ -12,11 +12,11 @@ const faqs = [
     answer: "We use a combination of AI-driven payload analysis, real-time URL reputation checks, and our proprietary community threat intelligence database to identify malicious patterns."
   },
   {
-    question: "Does QRGuard store my scans?",
+    question: "Does AEGIS QR store my scans?",
     answer: "For authenticated users, we store scan history to provide an audit trail. For guest users, data is processed in real-time and not permanently stored unless reported as malicious."
   },
   {
-    question: "Can QRGuard detect phishing websites?",
+    question: "Can AEGIS QR detect phishing websites?",
     answer: "Absolutely. Our engine analyzes the destination of the QR code, looking for brand impersonation, suspicious scripts, and known phishing indicators."
   },
   {

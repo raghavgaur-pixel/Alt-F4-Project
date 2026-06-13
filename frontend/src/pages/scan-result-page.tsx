@@ -22,7 +22,6 @@ import { useParams } from "react-router-dom";
 import { fetchScanById } from "@/api/scans";
 import { submitReport } from "@/api/reports";
 import { AppShell } from "@/components/layout/app-shell";
-import { BrowserInspectionPanel } from "@/components/scan/browser-inspection-panel";
 import { RiskMeter } from "@/components/scan/risk-meter";
 import { SeverityBadge } from "@/components/scan/severity-badge";
 import { ThreatFindings } from "@/components/scan/threat-findings";
@@ -501,28 +500,15 @@ export function ScanResultPage() {
                     <div className="text-xs uppercase text-slate-500">Length</div>
                     <div className="mt-1 text-base font-medium text-white">{scan.originalContent.length} Characters</div>
                   </div>
-                <div className="rounded-xl border border-border bg-slate-950/40 p-4">
-                  <div className="text-xs uppercase text-slate-500">Encoding</div>
-                  <div className="mt-1 text-base font-medium text-white">UTF-8</div>
+                  <div className="rounded-xl border border-border bg-slate-950/40 p-4">
+                    <div className="text-xs uppercase text-slate-500">Encoding</div>
+                    <div className="mt-1 text-base font-medium text-white">UTF-8</div>
+                  </div>
                 </div>
-              </div>
-              {scan.finalUrl ? (
                 <div className="rounded-xl border border-border bg-slate-950/40 p-4">
-                  <div className="text-xs uppercase text-slate-500">Final URL</div>
-                  <a
-                    href={scan.finalUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 break-all text-sm font-medium text-cyan-300 transition hover:text-cyan-200"
-                  >
-                    {scan.finalUrl}
-                  </a>
-                </div>
-              ) : null}
-              <div className="rounded-xl border border-border bg-slate-950/40 p-4">
-                <div className="text-xs uppercase text-slate-500">Decoded Payload</div>
-                <div className="mt-2 max-h-32 overflow-auto break-all text-sm leading-6 text-slate-200">
-                  {scan.originalContent}
+                  <div className="text-xs uppercase text-slate-500">Decoded Payload</div>
+                  <div className="mt-2 max-h-32 overflow-auto break-all text-sm leading-6 text-slate-200">
+                    {scan.originalContent}
                   </div>
                 </div>
               </CardContent>
@@ -530,8 +516,6 @@ export function ScanResultPage() {
           </div>
 
           <AiIntelligenceReport scan={scan} sections={reportSections} confidence={confidence} />
-
-          {scan.qrType === "URL" && scan.browserInspection ? <BrowserInspectionPanel inspection={scan.browserInspection} /> : null}
 
           <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
             <ThreatFindings findings={scan.threatReports} />

@@ -3,41 +3,22 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16-alpine
+    container_name: qrguard-ai-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: aegis_qr
+      POSTGRES_DB: qrguard_ai
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
     volumes:
-      - aegis_qr_postgres_data:/var/lib/postgresql/data
+      - qrguard_ai_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d aegis_qr"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d qrguard_ai"]
       interval: 5s
       timeout: 5s
       retries: 10
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-    ports:
-      - "4000:4000"
-    volumes:
-      - aegis_qr_analysis_artifacts:/app/backend/storage/analysis-artifacts
-    environment:
-      NODE_ENV: production
-      PORT: 4000
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/aegis_qr?schema=public
-      JWT_SECRET: replace-with-a-long-random-secret
-      CLIENT_URL: http://localhost:4000
-      GEMINI_API_KEY: mock
 
 volumes:
-  aegis_qr_postgres_data:
-  aegis_qr_analysis_artifacts:
+  qrguard_ai_postgres_data:
 

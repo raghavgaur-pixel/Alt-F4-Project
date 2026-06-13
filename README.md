@@ -1,6 +1,6 @@
-# AEGIS QR
+# Aegis QR
 
-AEGIS QR is a full-stack cybersecurity web application for analyzing QR codes and warning users about phishing attempts, malicious downloads, unsafe payment requests, and suspicious redirects.
+Aegis QR is a full-stack cybersecurity web application for analyzing QR codes and warning users about phishing attempts, malicious downloads, unsafe payment requests, and suspicious redirects.
 
 ## Stack
 
@@ -17,8 +17,6 @@ AEGIS QR is a full-stack cybersecurity web application for analyzing QR codes an
 ├── frontend
 │   ├── public
 │   └── src
-├── Dockerfile
-├── docker-compose.yml
 ├── .env.example
 └── README.md
 ```
@@ -30,12 +28,9 @@ AEGIS QR is a full-stack cybersecurity web application for analyzing QR codes an
 - QR image upload and decoding
 - QR type classification for URL, UPI, Wi-Fi, SMS, phone, email, vCard, crypto wallet, and text
 - URL and UPI risk analysis
-- Automated browser-based URL inspection with screenshot capture and redirect analysis
 - Threat scoring engine with severity levels
 - Mock Gemini AI explanation layer behind a provider abstraction
 - Community threat reporting and statistics
-- Production build flow that serves the compiled frontend from the backend
-- Docker and Docker Compose support for local or hosted deployments
 
 ## Backend Setup
 
@@ -43,12 +38,12 @@ AEGIS QR is a full-stack cybersecurity web application for analyzing QR codes an
 2. Start PostgreSQL. The fastest path is the included Docker Compose service:
 
 ```bash
-docker compose up -d postgres
+docker compose up -d
 ```
 
 This creates a local PostgreSQL instance with:
 
-- database: `aegis_qr`
+- database: `qrguard_ai`
 - user: `postgres`
 - password: `postgres`
 
@@ -66,7 +61,7 @@ npx prisma generate
 npx prisma migrate dev
 ```
 
-5. Start the API in development:
+5. Start the API:
 
 ```bash
 npm run dev
@@ -91,25 +86,6 @@ npm run dev
 
 The frontend runs on `http://localhost:5173`.
 
-## Production Build
-
-The backend can serve the compiled frontend directly, so one production process can host the full application.
-
-1. Build the frontend and backend:
-
-```bash
-cd backend
-npm run build
-```
-
-2. Start the production server:
-
-```bash
-npm start
-```
-
-By default the app serves the frontend bundle from `../frontend/dist` when that directory exists.
-
 ## API Endpoints
 
 - `POST /api/auth/register`
@@ -120,34 +96,9 @@ By default the app serves the frontend bundle from `../frontend/dist` when that 
 - `POST /api/report`
 - `GET /api/reports`
 
-## Deployment
-
-### Docker Compose
-
-The included `docker-compose.yml` starts PostgreSQL and the production app container together:
-
-```bash
-docker compose up --build
-```
-
-The site will be available at `http://localhost:4000`.
-
-### Vercel + Render or Railway
-
-Use Vercel for a separate static frontend deployment, or deploy the backend as a single production server on Render or Railway.
-
-- Frontend build command: `npm run build` in `frontend`
-- Frontend output directory: `dist`
-- Backend build command: `npm run build` in `backend`
-- Backend start command: `npm start` in `backend`
-- Backend environment variables: `DATABASE_URL`, `JWT_SECRET`, `CLIENT_URL`, `GEMINI_API_KEY`
-- Optional backend tuning variables: `ANALYSIS_ARTIFACT_DIR`, `URL_INSPECTION_TIMEOUT_MS`, `URL_INSPECTION_NAVIGATION_TIMEOUT_MS`, `URL_INSPECTION_VIEWPORT_WIDTH`, `URL_INSPECTION_VIEWPORT_HEIGHT`
-- Frontend environment variable: `VITE_API_URL` when the frontend is hosted separately from the API
-
 ## Notes
 
 - `GEMINI_API_KEY` is consumed by a mock Gemini provider for now, so the integration boundary is already in place for a real model client.
 - `backend/prisma/migrations/20260613000000_init/migration.sql` is included so the database shape is reproducible.
-- `backend/prisma/migrations/20260614000000_url_browser_inspection/migration.sql` adds the browser inspection fields and screenshot table.
 - The scan endpoint expects a multipart upload field named `file`.
-- If PostgreSQL is already installed locally, create a database named `aegis_qr` or update `DATABASE_URL` to match your existing instance before running Prisma migrations.
+- If PostgreSQL is already installed locally, create a database named `qrguard_ai` or update `DATABASE_URL` to match your existing instance before running Prisma migrations.

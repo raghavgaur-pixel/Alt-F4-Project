@@ -4,16 +4,7 @@ export function Footer() {
   return (
     <footer className="border-t border-white/5 bg-slate-950/50 px-6 py-12 backdrop-blur-md">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div className="space-y-4">
-            <Link to="/" className="text-xl font-bold text-cyan-300">
-              QRGuard AI
-            </Link>
-            <p className="text-sm leading-relaxed text-slate-400">
-              Securing the future of QR interactions with AI-driven threat intelligence and real-time security analysis.
-            </p>
-          </div>
-
+        <div className="grid gap-12 md:grid-cols-3">
           <div>
             <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">Product</h4>
             <ul className="space-y-2 text-sm text-slate-400">
