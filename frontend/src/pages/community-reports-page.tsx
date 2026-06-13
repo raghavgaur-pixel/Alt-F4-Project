@@ -66,7 +66,13 @@ function CategoryBreakdown({ data }: { data: CommunityReportResponse }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Category Breakdown</CardTitle>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm uppercase text-slate-500">Breakdown</p>
+            <CardTitle>Threat Categories</CardTitle>
+          </div>
+          <Badge variant="default">4 key signals</Badge>
+        </div>
       </CardHeader>
       <CardContent className="grid gap-4 sm:grid-cols-2">
         {cards.map((item) => {
@@ -100,7 +106,13 @@ function CommonScamsSection() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Common QR Scams</CardTitle>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm uppercase text-slate-500">Education</p>
+            <CardTitle>Common QR Scams</CardTitle>
+          </div>
+          <Badge>Prevention tips</Badge>
+        </div>
       </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {scams.map((scam) => {
@@ -128,10 +140,12 @@ export function CommunityReportsPage() {
     <MarketingShell>
       <div className="space-y-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-sm uppercase text-slate-500">Threat intelligence exchange</p>
-            <h1 className="text-3xl font-semibold text-white">Community Reports</h1>
-            <p className="mt-2 max-w-3xl text-slate-300">
+          <div className="space-y-3">
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em] text-slate-500">Threat intelligence exchange</p>
+              <h1 className="text-3xl font-semibold text-white">Community Reports</h1>
+            </div>
+            <p className="max-w-3xl text-sm leading-6 text-slate-300">
               Review malicious QR submissions, emerging scam categories, and shared intelligence from the AEGIS QR community.
             </p>
           </div>
@@ -140,6 +154,7 @@ export function CommunityReportsPage() {
             Community telemetry
           </Badge>
         </div>
+
         {reportsQuery.isLoading ? (
           <div className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -155,7 +170,7 @@ export function CommunityReportsPage() {
             <CardContent className="p-6 text-rose-300">{(reportsQuery.error as Error).message}</CardContent>
           </Card>
         ) : reportsQuery.data ? (
-          <>
+          <div className="space-y-6">
             <ReportStats statistics={reportsQuery.data.statistics} />
             <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
               <ThreatTrendChart data={reportsQuery.data} />
@@ -163,7 +178,7 @@ export function CommunityReportsPage() {
             </div>
             <RecentReportsList reports={reportsQuery.data.reports} />
             <CommonScamsSection />
-          </>
+          </div>
         ) : null}
       </div>
     </MarketingShell>
