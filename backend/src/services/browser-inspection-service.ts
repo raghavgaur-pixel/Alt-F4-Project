@@ -326,14 +326,7 @@ const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
   );
 }
 
-console.log({
-  finalHost,
-  isTrustedDomain,
-  hasLoginLanguage,
-  hasPasswordField,
-  hasIframeRisk,
-  score
-});
+
   const normalizedScore = Math.max(0, Math.min(100, score));
   const riskLevel = severityFromSignals(normalizedScore);
   confidence = clampConfidence(
