@@ -3,22 +3,22 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: qrguard-ai-postgres
+    container_name: aegis-qr-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: qrguard_ai
+      POSTGRES_DB: aegis_qr
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5433:5432"
     volumes:
-      - qrguard_ai_postgres_data:/var/lib/postgresql/data
+      - aegis_qr_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d qrguard_ai"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d aegis_qr"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  qrguard_ai_postgres_data:
+  aegis_qr_postgres_data:
 

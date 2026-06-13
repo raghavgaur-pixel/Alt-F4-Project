@@ -43,7 +43,7 @@ docker compose up -d
 
 This creates a local PostgreSQL instance with:
 
-- database: `qrguard_ai`
+- database: `aegis_qr`
 - user: `postgres`
 - password: `postgres`
 
@@ -101,4 +101,4 @@ The frontend runs on `http://localhost:5173`.
 - `GEMINI_API_KEY` is consumed by a mock Gemini provider for now, so the integration boundary is already in place for a real model client.
 - `backend/prisma/migrations/20260613000000_init/migration.sql` is included so the database shape is reproducible.
 - The scan endpoint expects a multipart upload field named `file`.
-- If PostgreSQL is already installed locally, create a database named `qrguard_ai` or update `DATABASE_URL` to match your existing instance before running Prisma migrations.
+- If PostgreSQL is already installed locally, create a database named `aegis_qr` or update `DATABASE_URL` to match your existing instance before running Prisma migrations.

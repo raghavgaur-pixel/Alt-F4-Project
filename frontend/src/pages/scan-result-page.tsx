@@ -446,6 +446,10 @@ function AiIntelligenceReport({
   );
 }
 
+function SkeletonBlock({ className = "" }: { className?: string }) {
+  return <div className={`animate-pulse rounded-xl bg-slate-800/70 ${className}`} />;
+}
+
 export function ScanResultPage() {
   const { id = "" } = useParams();
   const { token } = useAuth();
@@ -470,9 +474,17 @@ export function ScanResultPage() {
   return (
     <AppShell>
       {scanQuery.isLoading ? (
-        <Card>
-          <CardContent className="p-6 text-slate-400">Loading scan result...</CardContent>
-        </Card>
+        <div className="space-y-8">
+          <div className="space-y-2">
+            <SkeletonBlock className="h-4 w-32" />
+            <SkeletonBlock className="h-10 w-64" />
+          </div>
+          <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
+            <SkeletonBlock className="h-64" />
+            <SkeletonBlock className="h-64" />
+          </div>
+          <SkeletonBlock className="h-96" />
+        </div>
       ) : scanQuery.isError ? (
         <Card>
           <CardContent className="p-6 text-rose-300">{(scanQuery.error as Error).message}</CardContent>

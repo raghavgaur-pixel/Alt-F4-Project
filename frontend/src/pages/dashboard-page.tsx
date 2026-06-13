@@ -48,18 +48,18 @@ function InsightCard({
   tone?: string;
 }) {
   return (
-    <Card className="transition duration-200 hover:-translate-y-0.5 hover:border-cyan-400/25">
+    <Card className="group transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-cyan-500/10">
       <CardContent className="p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-xs uppercase text-slate-500">{label}</p>
-            <div className="mt-2 text-3xl font-semibold text-white">{value}</div>
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{label}</p>
+            <div className="mt-2 text-3xl font-bold text-white transition-colors group-hover:text-cyan-200">{value}</div>
           </div>
-          <div className="rounded-xl border border-border bg-slate-950/50 p-3">
-            <Icon className={`h-5 w-5 ${tone}`} />
+          <div className="rounded-xl border border-border bg-slate-950/50 p-3 transition-transform duration-300 group-hover:scale-110 group-hover:border-cyan-400/30">
+            <Icon className={`h-5 w-5 ${tone} transition-all group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]`} />
           </div>
         </div>
-        <p className="mt-3 text-sm text-slate-400">{helper}</p>
+        <p className="mt-3 text-sm leading-relaxed text-slate-400">{helper}</p>
       </CardContent>
     </Card>
   );
@@ -128,7 +128,9 @@ function FaqSection() {
     ["QR Analysis", "AEGIS QR decodes the image, identifies content type, inspects metadata, evaluates rules, and generates an AI explanation."],
     ["Privacy", "Scan records are kept for authenticated history and investigation context; avoid uploading personal QR codes you do not want analyzed."],
     ["Phishing Detection", "The engine looks for suspicious domains, redirects, credential prompts, urgency cues, and social-engineering language."],
-    ["Community Reports", "Community reports help surface repeated malicious categories and provide additional threat intelligence for other users."]
+    ["Community Reports", "Community reports help surface repeated malicious categories and provide additional threat intelligence for other users."],
+    ["Data Protection", "We use enterprise-grade encryption for all scan data and never share your personal scanning history with third parties."],
+    ["AI Accuracy", "Our threat detection model is continuously updated with community intelligence to maintain high accuracy against emerging QR scams."]
   ];
 
   return (
@@ -138,12 +140,12 @@ function FaqSection() {
       </CardHeader>
       <CardContent className="grid gap-3 lg:grid-cols-2">
         {faqs.map(([question, answer]) => (
-          <details key={question} className="group rounded-xl border border-border bg-slate-950/40 p-4 transition hover:border-cyan-400/25">
+          <details key={question} className="group rounded-xl border border-border bg-slate-950/40 p-4 transition-all duration-200 hover:border-cyan-400/25 hover:bg-slate-950/60">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-white">
-              {question}
-              <ChevronDown className="h-4 w-4 text-slate-500 transition group-open:rotate-180" />
+              <span className="group-open:text-cyan-300 transition-colors">{question}</span>
+              <ChevronDown className="h-4 w-4 text-slate-500 transition-transform duration-300 group-open:rotate-180" />
             </summary>
-            <p className="mt-3 text-sm leading-6 text-slate-400">{answer}</p>
+            <p className="mt-3 text-sm leading-6 text-slate-400 animate-in fade-in slide-in-from-top-1">{answer}</p>
           </details>
         ))}
       </CardContent>
@@ -214,13 +216,15 @@ export function DashboardPage() {
               <p className="text-rose-300">{(recentQuery.error as Error).message}</p>
             ) : !recentQuery.data || recentQuery.data.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-cyan-400/25 bg-slate-950/40 p-6 text-center">
-                <Sparkles className="mx-auto h-8 w-8 text-cyan-300" />
-                <h3 className="mt-3 font-semibold text-white">No recent scans yet</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-400">Upload a QR image to populate this intelligence feed with risk, severity, and confidence.</p>
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-cyan-400/10">
+                  <Sparkles className="h-6 w-6 text-cyan-300" />
+                </div>
+                <h3 className="mt-4 font-semibold text-white">No recent scans yet</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-400">Upload a QR image to populate this intelligence feed with risk, severity, and confidence. Scan your first QR to see intelligence insights.</p>
               </div>
             ) : (
               recentQuery.data?.slice(0, 4).map((scan) => (
-                <div key={scan.id} className="rounded-xl border border-border bg-slate-950/40 p-4 transition hover:border-cyan-400/25 hover:bg-slate-950/60">
+                <div key={scan.id} className="rounded-xl border border-border bg-slate-950/40 p-4 transition-all duration-200 hover:scale-[1.01] hover:border-cyan-400/25 hover:bg-slate-950/60 hover:shadow-lg hover:shadow-cyan-500/10">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
