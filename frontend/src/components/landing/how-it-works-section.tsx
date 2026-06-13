@@ -1,6 +1,6 @@
 const steps = [
   "Upload a QR image from desktop or mobile.",
-  "QRGuard AI decodes the payload and identifies the QR type.",
+  "AEGIS QR decodes the payload and identifies the QR type.",
   "Analysis services score the risk and summarize threat signals.",
   "Users review the result, recommendations, and report malicious findings."
 ];

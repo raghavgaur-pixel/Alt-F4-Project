@@ -40,7 +40,7 @@ export function LoginPage() {
       <div className="mx-auto flex min-h-[80vh] max-w-md items-center px-6">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Login to QRGuard AI</CardTitle>
+            <CardTitle>Login to AEGIS QR</CardTitle>
           </CardHeader>
           <CardContent>
             <form

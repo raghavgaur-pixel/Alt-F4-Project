@@ -1,28 +1,70 @@
+import { Clock3, FileSearch, Gauge, ShieldAlert } from "lucide-react";
 import type { CommunityReport } from "@/types/api";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SeverityBadge } from "@/components/scan/severity-badge";
 
 export function RecentReportsList({ reports }: { reports: CommunityReport[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recently Reported QR Threats</CardTitle>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm uppercase text-slate-500">Community intelligence feed</p>
+            <CardTitle>Recently Reported QR Threats</CardTitle>
+          </div>
+          <Badge>{reports.length} reports</Badge>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {reports.map((report) => (
-          <div key={report.id} className="rounded-2xl border border-border bg-slate-950/40 p-5">
-            <div className="mb-3 flex flex-wrap items-center gap-3">
-              <Badge variant="danger">{report.category.replace(/_/g, " ")}</Badge>
-              <span className="text-sm text-slate-400">{new Date(report.createdAt).toLocaleString()}</span>
+      <CardContent className="grid gap-4 lg:grid-cols-2">
+        {reports.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-cyan-400/25 bg-slate-950/40 p-8 text-center lg:col-span-2">
+            <FileSearch className="mx-auto h-10 w-10 text-cyan-300" />
+            <h3 className="mt-4 text-lg font-semibold text-white">No community reports yet</h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-400">
+              Report suspicious QR codes from scan results to build shared intelligence for phishing, payment fraud, and malware campaigns.
+            </p>
+          </div>
+        ) : (
+          reports.map((report) => (
+          <div key={report.id} className="rounded-2xl border border-border bg-slate-950/40 p-5 transition duration-200 hover:-translate-y-0.5 hover:border-cyan-400/25 hover:bg-slate-950/60">
+            <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+              <div className="space-y-2">
+                <Badge variant="danger">{report.category.replace(/_/g, " ")}</Badge>
+                <div className="flex items-center gap-2 text-sm text-slate-400">
+                  <Clock3 className="h-4 w-4 text-slate-500" />
+                  {new Date(report.createdAt).toLocaleString()}
+                </div>
+              </div>
+              <SeverityBadge severity={report.scan.severity} />
             </div>
-            <p className="text-sm text-slate-300">{report.description}</p>
-            <div className="mt-3 text-sm text-slate-400">
-              QR type: {report.scan.qrType} | Risk score: {report.scan.riskScore}
+            <h3 className="text-base font-semibold text-white">{report.scan.qrType} threat report</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-300">{report.description}</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-border bg-slate-950/50 p-3">
+                <div className="flex items-center gap-2 text-xs uppercase text-slate-500">
+                  <Gauge className="h-4 w-4 text-cyan-300" />
+                  Risk score
+                </div>
+                <div className="mt-2 flex items-center gap-3">
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-800">
+                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500" style={{ width: `${report.scan.riskScore}%` }} />
+                  </div>
+                  <span className="text-sm font-semibold text-white">{report.scan.riskScore}</span>
+                </div>
+              </div>
+              <div className="rounded-xl border border-border bg-slate-950/50 p-3">
+                <div className="flex items-center gap-2 text-xs uppercase text-slate-500">
+                  <ShieldAlert className="h-4 w-4 text-amber-300" />
+                  Summary
+                </div>
+                <p className="mt-2 text-sm text-slate-300">{report.category.replace(/_/g, " ")} signal on {report.scan.qrType}</p>
+              </div>
             </div>
           </div>
-        ))}
+          ))
+        )}
       </CardContent>
     </Card>
   );
 }
-

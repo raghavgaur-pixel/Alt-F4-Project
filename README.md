@@ -1,6 +1,6 @@
-# QRGuard AI
+# Aegis QR
 
-QRGuard AI is a full-stack cybersecurity web application for analyzing QR codes and warning users about phishing attempts, malicious downloads, unsafe payment requests, and suspicious redirects.
+Aegis QR is a full-stack cybersecurity web application for analyzing QR codes and warning users about phishing attempts, malicious downloads, unsafe payment requests, and suspicious redirects.
 
 ## Stack
 

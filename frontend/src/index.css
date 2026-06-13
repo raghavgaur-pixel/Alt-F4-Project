@@ -23,9 +23,25 @@ body {
   min-height: 100vh;
 }
 
+@keyframes threat-fill {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes report-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer utilities {
   .glass-card {
     @apply border border-border bg-card/80 shadow-glow backdrop-blur-md;
   }
 }
-

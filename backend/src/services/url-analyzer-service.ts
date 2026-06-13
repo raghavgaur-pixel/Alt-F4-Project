@@ -109,8 +109,8 @@ export const urlAnalyzerService = {
         redirectCount,
         urlLength: parsedUrl.href.length,
         containsApkDownload,
-        domainAgeNote: "Domain age check is a placeholder until WHOIS or threat intel is integrated.",
-        loginFormNote: "Login form detection is a placeholder until headless inspection is integrated."
+        domainAgeNote: "Domain age intelligence was not available for this local scan.",
+        loginFormNote: "Login form inspection was not performed during this local scan."
       },
       scoreDelta,
       findings,
@@ -118,4 +118,3 @@ export const urlAnalyzerService = {
     };
   }
 };
-
