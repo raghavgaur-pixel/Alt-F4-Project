@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Severity {
+  SAFE
+  LOW_RISK
+  MEDIUM_RISK
+  HIGH_RISK
+  CRITICAL
+}
+
+enum ThreatCategory {
+  PHISHING
+  MALWARE
+  PAYMENT_FRAUD
+  SOCIAL_ENGINEERING
+  SUSPICIOUS_REDIRECT
+  DATA_HARVESTING
+  UNKNOWN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  scans        Scan[]
+}
+
+model Scan {
+  id              String         @id @default(cuid())
+  userId          String
+  originalContent String
+  qrType          String
+  riskScore       Int
+  aiExplanation   String
+  severity        Severity
+  createdAt       DateTime       @default(now())
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  threatReports   ThreatReport[]
+}
+
+model ThreatReport {
+  id          String         @id @default(cuid())
+  scanId      String
+  category    ThreatCategory
+  description String
+  createdAt   DateTime       @default(now())
+  scan        Scan           @relation(fields: [scanId], references: [id], onDelete: Cascade)
+}
+
