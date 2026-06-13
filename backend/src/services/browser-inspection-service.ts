@@ -38,6 +38,22 @@ const TRUST_BRAND_TERMS = [
   "wallet"
 ];
 
+const TRUSTED_DOMAINS = [
+  "youtube.com",
+  "google.com",
+  "gmail.com",
+  "github.com",
+  "microsoft.com",
+  "amazon.com",
+  "apple.com",
+  "paypal.com",
+  "cloudflare.com",
+  "openai.com",
+  "linkedin.com",
+  "reddit.com",
+  "wikipedia.org"
+];
+
 function createBrowserErrorFinding(message: string): DetectedThreat {
   return {
     category: ThreatCategory.UNKNOWN,
@@ -119,6 +135,11 @@ function analyzeSignals(params: {
   let confidence = 82;
 
   const finalHost = safeUrlHostname(params.finalUrl);
+  const isTrustedDomain = TRUSTED_DOMAINS.some(
+  (domain) =>
+    finalHost === domain ||
+    finalHost.endsWith(`.${domain}`)
+);
   const urlObject = new URL(params.finalUrl);
   const isHttps = urlObject.protocol === "https:";
   const shortened = URL_SHORTENERS.has(finalHost);
@@ -136,12 +157,14 @@ function analyzeSignals(params: {
   const hasDownloadPrompt = /download|install|apk|update now/i.test(`${params.title}\n${params.bodyText}`);
   const pageText = params.bodyText.toLowerCase();
 
-const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
-  const mentionsBrand = pageText.includes(term);
-  const hostMatchesBrand = finalHost.includes(term);
+const brandImpersonation =
+  !isTrustedDomain &&
+  TRUST_BRAND_TERMS.some((term) => {
+    const mentionsBrand = pageText.includes(term);
+    const hostMatchesBrand = finalHost.includes(term);
 
-  return mentionsBrand && !hostMatchesBrand;
-});
+    return mentionsBrand && !hostMatchesBrand;
+  });
   const socialEngineering = /urgent|limited time|verify|suspended|blocked|claim now|reward|gift/i.test(
     `${params.title}\n${params.bodyText}`
   );
@@ -163,8 +186,11 @@ const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
     analysisNotes.add("URL shortening service detected.");
   }
 
-  if (hasLoginLanguage) {
-    score += 10;
+  if (hasLoginLanguage &&
+  !isTrustedDomain &&
+  hasPasswordField
+) {
+  score += 10;
     findings.push({
       category: ThreatCategory.PHISHING,
       description: "The page uses login or verification language that can support credential harvesting."
@@ -199,14 +225,23 @@ const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
     });
   }
 
-  if (hasIframeRisk) {
-    score += 12;
-    findings.push({
-      category: ThreatCategory.SUSPICIOUS_REDIRECT,
-      description: "Hidden or zero-sized iframe content was detected."
-    });
-    screenshotFindings.add("Hidden iframe content detected.");
-  }
+  if (
+  hasIframeRisk &&
+  !isTrustedDomain &&
+  params.iframeDetails.length > 2
+) {
+  score += 3;
+
+  findings.push({
+    category: ThreatCategory.SUSPICIOUS_REDIRECT,
+    description:
+      "Multiple hidden iframe elements were detected."
+  });
+
+  screenshotFindings.add(
+    "Multiple hidden iframe elements detected."
+  );
+}
 
   if (hasSuspiciousJs) {
     score += 12;
@@ -280,6 +315,14 @@ const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
   if (params.iframeDetails.length > 0 && params.iframeDetails.every((iframe) => iframe.hidden)) {
     screenshotFindings.add("One or more iframes were hidden from the user.");
   }
+
+  if (isTrustedDomain) {
+  score = Math.max(0, score - 25);
+
+  analysisNotes.add(
+    "Destination matches a trusted high-reputation domain."
+  );
+}
 
   const normalizedScore = Math.max(0, Math.min(100, score));
   const riskLevel = severityFromSignals(normalizedScore);
@@ -472,8 +515,6 @@ export const browserInspectionService = {
 
       screenshotData.fullPage = await page.screenshot({ fullPage: true });
       screenshotData.viewport = await page.screenshot({ fullPage: false });
-      analysisNotes.push("Full-page screenshot captured successfully.");
-analysisNotes.push("Viewport screenshot captured successfully.");
       await page.waitForTimeout(400);
       screenshotData.finalRedirected = await page.screenshot({ fullPage: false });
 
@@ -591,7 +632,7 @@ analysisNotes.push("Viewport screenshot captured successfully.");
         scoreDelta: analysis.scoreDelta,
         browserErrors: browserErrorMessages
       };
-      analysisNotes.push("Browser inspection completed successfully.");
+
       return browserResult;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
