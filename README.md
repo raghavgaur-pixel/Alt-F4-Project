@@ -35,7 +35,18 @@ QRGuard AI is a full-stack cybersecurity web application for analyzing QR codes 
 ## Backend Setup
 
 1. Copy `.env.example` to `.env`.
-2. Create a PostgreSQL database.
+2. Start PostgreSQL. The fastest path is the included Docker Compose service:
+
+```bash
+docker compose up -d
+```
+
+This creates a local PostgreSQL instance with:
+
+- database: `qrguard_ai`
+- user: `postgres`
+- password: `postgres`
+
 3. Install dependencies:
 
 ```bash
@@ -90,3 +101,4 @@ The frontend runs on `http://localhost:5173`.
 - `GEMINI_API_KEY` is consumed by a mock Gemini provider for now, so the integration boundary is already in place for a real model client.
 - `backend/prisma/migrations/20260613000000_init/migration.sql` is included so the database shape is reproducible.
 - The scan endpoint expects a multipart upload field named `file`.
+- If PostgreSQL is already installed locally, create a database named `qrguard_ai` or update `DATABASE_URL` to match your existing instance before running Prisma migrations.
