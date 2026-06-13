@@ -38,6 +38,20 @@ const TRUST_BRAND_TERMS = [
   "wallet"
 ];
 
+const TRUSTED_DOMAINS = [
+  "youtube.com",
+  "google.com",
+  "github.com",
+  "microsoft.com",
+  "amazon.com",
+  "apple.com",
+  "paypal.com",
+  "facebook.com",
+  "instagram.com",
+  "x.com",
+  "linkedin.com"
+];
+
 function createBrowserErrorFinding(message: string): DetectedThreat {
   return {
     category: ThreatCategory.UNKNOWN,
@@ -119,6 +133,11 @@ function analyzeSignals(params: {
   let confidence = 82;
 
   const finalHost = safeUrlHostname(params.finalUrl);
+  const isTrustedDomain = TRUSTED_DOMAINS.some(
+  (domain) =>
+    finalHost === domain ||
+    finalHost.endsWith(`.${domain}`)
+);
   const urlObject = new URL(params.finalUrl);
   const isHttps = urlObject.protocol === "https:";
   const shortened = URL_SHORTENERS.has(finalHost);
@@ -128,7 +147,15 @@ function analyzeSignals(params: {
   const hasPasswordField = params.formDetails.some((form) => form.hasPassword);
   const hasCardField = params.formDetails.some((form) => form.hasCardFields);
   const hasSuspiciousForm = hasPasswordField || hasCardField || params.formDetails.some((form) => /post/i.test(form.method));
-  const hasIframeRisk = params.iframeDetails.some((iframe) => iframe.hidden);
+  const hiddenIframeCount = params.iframeDetails.filter(
+  (iframe) =>
+    iframe.hidden &&
+    iframe.src &&
+    !iframe.src.includes("google.com") &&
+    !iframe.src.includes("youtube.com")
+).length;
+
+const hasIframeRisk = hiddenIframeCount >= 3;
   const scriptText = params.scriptSnippets.join("\n").toLowerCase();
   const hasSuspiciousJs =
     /eval\s*\(|document\.write\s*\(|settimeout\s*\(\s*['"`]/i.test(scriptText) ||
@@ -163,14 +190,23 @@ const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
     analysisNotes.add("URL shortening service detected.");
   }
 
-  if (hasLoginLanguage) {
-    score += 10;
-    findings.push({
-      category: ThreatCategory.PHISHING,
-      description: "The page uses login or verification language that can support credential harvesting."
-    });
-    screenshotFindings.add("Login or verification language visible in the rendered page.");
-  }
+  if (
+  hasLoginLanguage &&
+  !isTrustedDomain &&
+  hasPasswordField
+) {
+  score += 10;
+
+  findings.push({
+    category: ThreatCategory.PHISHING,
+    description:
+      "The page uses login or verification language that can support credential harvesting."
+  });
+
+  screenshotFindings.add(
+    "Login or verification language visible in the rendered page."
+  );
+}
 
   if (hasPasswordField) {
     score += 20;
@@ -281,6 +317,23 @@ const brandImpersonation = TRUST_BRAND_TERMS.some((term) => {
     screenshotFindings.add("One or more iframes were hidden from the user.");
   }
 
+
+  if (isTrustedDomain) {
+  score = Math.max(0, score - 20);
+
+  analysisNotes.add(
+    "Trusted domain detected."
+  );
+}
+
+console.log({
+  finalHost,
+  isTrustedDomain,
+  hasLoginLanguage,
+  hasPasswordField,
+  hasIframeRisk,
+  score
+});
   const normalizedScore = Math.max(0, Math.min(100, score));
   const riskLevel = severityFromSignals(normalizedScore);
   confidence = clampConfidence(
