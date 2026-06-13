@@ -6,3 +6,4 @@ coverage
 backend/generated
 frontend/.vite
 
+backend/storage/analysis-artifacts/
