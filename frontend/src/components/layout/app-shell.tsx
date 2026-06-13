@@ -15,7 +15,7 @@ export function AppShell({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen">
       <header className="border-b border-border bg-slate-950/50 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
           <Link to="/" className="text-lg font-semibold text-cyan-300">
             QRGuard AI
           </Link>
@@ -45,9 +45,24 @@ export function AppShell({ children }: PropsWithChildren) {
             </Button>
           </div>
         </div>
+        <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-6 pb-4 md:hidden">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.href}
+              to={item.href}
+              className={({ isActive }) =>
+                cn(
+                  "whitespace-nowrap rounded-lg border border-border px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-900",
+                  isActive && "bg-slate-900 text-cyan-300"
+                )
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
       </header>
       <main className="mx-auto max-w-7xl px-6 py-10">{children}</main>
     </div>
   );
 }
-

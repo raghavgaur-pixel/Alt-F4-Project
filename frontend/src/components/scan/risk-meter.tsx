@@ -17,7 +17,11 @@ export function RiskMeter({ riskScore, severity }: { riskScore: number; severity
           style={{ width: `${riskScore}%` }}
         />
       </div>
+      <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span>Low exposure</span>
+        <span>Elevated exposure</span>
+        <span>Critical exposure</span>
+      </div>
     </div>
   );
 }
-
