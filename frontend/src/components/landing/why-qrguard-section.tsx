@@ -17,9 +17,9 @@ export function WhyQRGuardSection() {
       <div className="mx-auto max-w-5xl">
         <div className="mb-16 text-center">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-cyan-400">Comparison</h2>
-          <h3 className="mt-2 text-3xl font-bold text-white md:text-4xl">Why QRGuard AI?</h3>
+          <h3 className="mt-2 text-3xl font-bold text-white md:text-4xl">Why AEGIS QR?</h3>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
-            Standard scanners only read content. QRGuard AI understands the intent behind every pixel.
+            Standard scanners only read content. AEGIS QR understands the intent behind every pixel.
           </p>
         </div>
 
@@ -29,7 +29,7 @@ export function WhyQRGuardSection() {
               <tr className="border-b border-white/5 bg-white/5">
                 <th className="px-6 py-4 text-sm font-semibold text-white">Security Feature</th>
                 <th className="px-6 py-4 text-center text-sm font-semibold text-slate-400">Standard Scanner</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-cyan-400">QRGuard AI</th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-cyan-400">AEGIS QR</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
