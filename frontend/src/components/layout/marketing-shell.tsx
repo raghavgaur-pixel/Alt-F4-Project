@@ -11,7 +11,7 @@ export function MarketingShell({ children }: PropsWithChildren) {
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <Link to="/" className="text-xl font-bold text-cyan-300">
-          QRGuard AI
+          AEGIS QR
         </Link>
         <div className="flex gap-3">
           {isAuthenticated ? (

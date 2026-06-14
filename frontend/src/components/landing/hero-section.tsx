@@ -34,7 +34,7 @@ export function HeroSection() {
                 Scan QR codes before <span className="text-cyan-400">they scan you.</span>
               </h1>
               <p className="max-w-2xl text-lg leading-relaxed text-slate-300 md:text-xl">
-                QRGuard AI detects risky payment requests, phishing destinations, malicious downloads, and social engineering patterns before you tap through.
+                AEGIS QR detects risky payment requests, phishing destinations, malicious downloads, and social engineering patterns before you tap through.
               </p>
             </div>
             <div className="flex flex-wrap gap-4">

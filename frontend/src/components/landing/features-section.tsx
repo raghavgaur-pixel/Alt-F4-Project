@@ -15,7 +15,7 @@ const features = [
     icon: BrainCircuit
   },
   {
-    title: "QR Fraud Detection",
+    title: "AEGIS QR Detection",
     description: "Identify fraudulent QR codes designed to steal credentials or sensitive personal information.",
     icon: ShieldAlert
   },
