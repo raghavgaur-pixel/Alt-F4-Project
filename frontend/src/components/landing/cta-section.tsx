@@ -15,7 +15,7 @@ export function CTASection() {
               Ready to analyze your next QR code?
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400">
-              Join thousands of users who trust QRGuard AI to secure their digital interactions. Get started today and scan with confidence.
+              Join thousands of users who trust AEGIS QR to secure their digital interactions. Get started today and scan with confidence.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Button asChild size="lg" className="h-14 px-10 text-lg font-bold shadow-xl shadow-cyan-500/20">

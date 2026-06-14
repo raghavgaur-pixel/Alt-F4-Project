@@ -31,10 +31,13 @@ export function HeroSection() {
             </div>
             <div className="space-y-4">
               <h1 className="text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">
-                Scan QR codes before <span className="text-cyan-400">they scan you.</span>
+                AEGIS QR
               </h1>
-              <p className="max-w-2xl text-lg leading-relaxed text-slate-300 md:text-xl">
-                QRGuard AI detects risky payment requests, phishing destinations, malicious downloads, and social engineering patterns before you tap through.
+              <p className="max-w-2xl text-xl font-semibold leading-relaxed text-cyan-400 md:text-2xl mt-4">
+                Next-Generation AI Security for QR Codes
+              </p>
+              <p className="max-w-2xl text-lg leading-relaxed text-slate-300 md:text-xl mt-4">
+                Detect phishing links, fake payment requests, malicious redirects, and suspicious QR content before you interact with them.
               </p>
             </div>
             <div className="flex flex-wrap gap-4">

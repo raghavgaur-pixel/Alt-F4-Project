@@ -41,7 +41,7 @@ export function ThreatCategoriesSection() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-16">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-rose-400">Protection</h2>
-          <h3 className="mt-2 text-3xl font-bold text-white md:text-4xl">What QRGuard AI protects against</h3>
+          <h3 className="mt-2 text-3xl font-bold text-white md:text-4xl">What AEGIS QR protects against</h3>
           <p className="mt-4 max-w-2xl text-lg text-slate-400">
             Our specialized detection engines are trained to identify a wide range of QR-based threats before they cause harm.
           </p>
